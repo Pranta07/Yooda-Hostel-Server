@@ -27,6 +27,7 @@ async function run() {
         const database = client.db("YoodaHostel");
         const foodsCollection = database.collection("foods");
         const studentsCollection = database.collection("students");
+        const distributionCollection = database.collection("foodDistribution");
 
         //post api for adding new food item
         app.post("/addFood", async (req, res) => {
@@ -122,6 +123,22 @@ async function run() {
         app.get("/allFoods", async (req, res) => {
             const result = await foodsCollection.find({}).toArray();
             res.json(result);
+        });
+
+        //post api for distributing foods
+        app.post("/disFood", async (req, res) => {
+            const data = req.body;
+            const query = {
+                studentId: data.studentId,
+                date: data.date,
+                shift: data.shift,
+            };
+
+            const result1 = await distributionCollection.findOne(query);
+            if (!result1) {
+                const result = await distributionCollection.insertOne(data);
+                res.json(result);
+            } else res.json({});
         });
     } finally {
         //   await client.close();
