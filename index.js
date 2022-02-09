@@ -48,17 +48,21 @@ async function run() {
             res.json({ count, foods });
         });
 
-        //edit item api
-        app.post("/editItem/:id", async (req, res) => {
+        //edit item/student api
+        app.put("/edit/:id", async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             const updateDoc = {
                 $set: req.body,
             };
-            const result = await foodsCollection.updateOne(filter, updateDoc);
+            const collection =
+                req.query.type === "food"
+                    ? foodsCollection
+                    : studentsCollection;
+            const result = await collection.updateOne(filter, updateDoc);
             res.json(result);
         });
 
-        //api to delete food item
+        //api to delete food item or a student
         app.delete("/delete/:id", async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             const collection =
