@@ -34,6 +34,18 @@ async function run() {
             const result = await foodsCollection.insertOne(food);
             res.json(result);
         });
+
+        //get api for food items
+        app.get("/foods", async (req, res) => {
+            const page = req.query.page;
+            const cursor = foodsCollection.find({});
+            const count = await cursor.count();
+            const foods = await cursor
+                .skip(page * 5)
+                .limit(5)
+                .toArray();
+            res.json({ count, foods });
+        });
     } finally {
         //   await client.close();
     }
