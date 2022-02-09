@@ -47,13 +47,20 @@ async function run() {
             res.json({ count, foods });
         });
 
+        //edit item api
         app.post("/editItem/:id", async (req, res) => {
-            console.log(req.body, req.params.id);
             const filter = { _id: ObjectId(req.params.id) };
             const updateDoc = {
                 $set: req.body,
             };
             const result = await foodsCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        });
+
+        //api to delete food item
+        app.delete("/deleteItem/:id", async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            const result = await foodsCollection.deleteOne(filter);
             res.json(result);
         });
     } finally {
