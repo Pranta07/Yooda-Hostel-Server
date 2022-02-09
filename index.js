@@ -117,6 +117,12 @@ async function run() {
             const result = await studentsCollection.findOne(query);
             res.json(result);
         });
+
+        //get api for all foods
+        app.get("/allFoods", async (req, res) => {
+            const result = await foodsCollection.find({}).toArray();
+            res.json(result);
+        });
     } finally {
         //   await client.close();
     }
