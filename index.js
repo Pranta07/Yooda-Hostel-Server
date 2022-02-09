@@ -24,8 +24,16 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         await client.connect();
+        const database = client.db("YoodaHostel");
+        const foodsCollection = database.collection("foods");
 
-        console.log("db connected");
+        //post api for adding new food item
+        app.post("/addFood", async (req, res) => {
+            console.log(req.body);
+            const food = req.body;
+            const result = await foodsCollection.insertOne(food);
+            res.json(result);
+        });
     } finally {
         //   await client.close();
     }
