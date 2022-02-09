@@ -110,6 +110,13 @@ async function run() {
             );
             res.json(result);
         });
+
+        //get api for a single student
+        app.get("/student/:roll", async (req, res) => {
+            const query = { roll: req.params.roll };
+            const result = await studentsCollection.findOne(query);
+            res.json(result);
+        });
     } finally {
         //   await client.close();
     }
