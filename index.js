@@ -26,6 +26,7 @@ async function run() {
         await client.connect();
         const database = client.db("YoodaHostel");
         const foodsCollection = database.collection("foods");
+        const studentsCollection = database.collection("students");
 
         //post api for adding new food item
         app.post("/addFood", async (req, res) => {
@@ -61,6 +62,13 @@ async function run() {
         app.delete("/deleteItem/:id", async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             const result = await foodsCollection.deleteOne(filter);
+            res.json(result);
+        });
+
+        //post api for adding new student
+        app.post("/addStudent", async (req, res) => {
+            const student = req.body;
+            const result = await studentsCollection.insertOne(student);
             res.json(result);
         });
     } finally {
