@@ -29,7 +29,7 @@ async function run() {
 
         //post api for adding new food item
         app.post("/addFood", async (req, res) => {
-            console.log(req.body);
+            // console.log(req.body);
             const food = req.body;
             const result = await foodsCollection.insertOne(food);
             res.json(result);
@@ -45,6 +45,16 @@ async function run() {
                 .limit(5)
                 .toArray();
             res.json({ count, foods });
+        });
+
+        app.post("/editItem/:id", async (req, res) => {
+            console.log(req.body, req.params.id);
+            const filter = { _id: ObjectId(req.params.id) };
+            const updateDoc = {
+                $set: req.body,
+            };
+            const result = await foodsCollection.updateOne(filter, updateDoc);
+            res.json(result);
         });
     } finally {
         //   await client.close();
