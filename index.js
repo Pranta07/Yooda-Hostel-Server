@@ -59,9 +59,13 @@ async function run() {
         });
 
         //api to delete food item
-        app.delete("/deleteItem/:id", async (req, res) => {
+        app.delete("/delete/:id", async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
-            const result = await foodsCollection.deleteOne(filter);
+            const collection =
+                req.query.type === "food"
+                    ? foodsCollection
+                    : studentsCollection;
+            const result = await collection.deleteOne(filter);
             res.json(result);
         });
 
@@ -70,6 +74,18 @@ async function run() {
             const student = req.body;
             const result = await studentsCollection.insertOne(student);
             res.json(result);
+        });
+
+        //get api for students
+        app.get("/students", async (req, res) => {
+            const page = req.query.page;
+            const cursor = studentsCollection.find({});
+            const count = await cursor.count();
+            const students = await cursor
+                .skip(page * 5)
+                .limit(5)
+                .toArray();
+            res.json({ count, students });
         });
     } finally {
         //   await client.close();
