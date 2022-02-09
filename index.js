@@ -91,6 +91,25 @@ async function run() {
                 .toArray();
             res.json({ count, students });
         });
+
+        //bulk update status api
+        app.put("/students/update/:status", async (req, res) => {
+            const filter = {
+                _id: {
+                    $in: req.body.map((id) => ObjectId(id)),
+                },
+            };
+            const updateDoc = {
+                $set: {
+                    status: req.params.status,
+                },
+            };
+            const result = await studentsCollection.updateMany(
+                filter,
+                updateDoc
+            );
+            res.json(result);
+        });
     } finally {
         //   await client.close();
     }
