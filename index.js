@@ -135,10 +135,20 @@ async function run() {
             };
 
             const result1 = await distributionCollection.findOne(query);
-            if (!result1) {
+            const result2 = await studentsCollection.findOne({
+                roll: data.studentId,
+            });
+
+            if (!result1 && result2) {
                 const result = await distributionCollection.insertOne(data);
                 res.json(result);
-            } else res.json({});
+            } else if (!result2) {
+                res.json({
+                    msg: "This id is not valid! Put a valid id Please!",
+                });
+            } else {
+                res.json({ msg: "Already Served!" });
+            }
         });
     } finally {
         //   await client.close();
